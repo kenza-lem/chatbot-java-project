@@ -1,0 +1,158 @@
+[
+  {
+    "id": 1,
+    "mot-cle": [
+      "connexion", "cnx", "internet", "accès", "lien", "connectivité", "adresse IP",
+      "télécharger", "se connecter", "hors-ligne", "téléchargement", "wifi", "Wi-Fi", "déconnexion",
+      "couper", "réseau", "accessible", "signal faible", "panne", "lenteur", "mot de passe wifi",
+      "routeur", "modem", "configuration", "SSID", "authentification", "erreur réseau", "ping",
+      "perte de connexion"
+    ],
+    "problemes": [
+      {
+        "question": "Impossible de se connecter au Wi-Fi",
+        "solution": "Vérifiez si le Wi-Fi est activé sur votre appareil et si le mot de passe est correct. Redémarrez le routeur si nécessaire."
+      },
+      {
+        "question": "Connexion Wi-Fi très lente",
+        "solution": "Rapprochez-vous du routeur ou redémarrez-le. Limitez le nombre d'appareils connectés au réseau."
+      },
+      {
+        "question": "Le Wi-Fi se déconnecte fréquemment",
+        "solution": "Vérifiez la stabilité du signal Wi-Fi. Mettez à jour les pilotes réseau de votre appareil."
+      },
+      {
+        "question": "Message « Adresse IP non valide »",
+        "solution": "Redémarrez votre routeur et votre appareil. Réinitialisez les paramètres réseau si nécessaire."
+      },
+      {
+        "question": "Aucun accès Internet malgré une connexion Wi-Fi",
+        "solution": "Vérifiez que votre modem ou routeur est bien connecté à Internet. Contactez votre fournisseur d’accès si le problème persiste."
+      },
+      {
+        "question": "Impossible de trouver le réseau Wi-Fi",
+        "solution": "Vérifiez si votre réseau Wi-Fi est caché. Ajoutez-le manuellement en entrant le SSID."
+      },
+      {
+        "question": "Erreur d'authentification Wi-Fi",
+        "solution": "Saisissez de nouveau le mot de passe Wi-Fi. Redémarrez votre appareil et votre routeur."
+      },
+      {
+        "question": "Connexion Wi-Fi sécurisée indisponible",
+        "solution": "Vérifiez les paramètres de sécurité de votre routeur et assurez-vous que le firmware est à jour."
+      },
+      {
+        "question": "Le signal Wi-Fi est très faible",
+        "solution": "Essayez de rapprocher votre appareil du routeur ou utilisez un amplificateur Wi-Fi."
+      },
+      {
+        "question": "La connexion coupe après un certain temps",
+        "solution": "Assurez-vous que votre routeur n’a pas une fonction d’économie d’énergie activée."
+      },
+      {
+        "question": "Problème de compatibilité entre appareil et routeur",
+        "solution": "Mettez à jour le firmware de votre routeur et vérifiez la compatibilité des normes Wi-Fi (ex: 802.11ac)."
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "mot-cle": ["reseau public", "wifi public", "connexion publique", "cafe", "hotel", "aeroport"],
+    "problemes": [
+      {
+        "question": "Impossible de se connecter à un réseau Wi-Fi public",
+        "solution": "Vérifiez si vous devez accepter les conditions d'utilisation sur une page de redirection. Essayez d'ouvrir un navigateur et d'accéder à un site pour déclencher cette page."
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "mot-cle": ["dns", "erreur dns", "serveur dns", "adresse introuvable"],
+    "problemes": [
+      {
+        "question": "Erreur DNS lors de la connexion Wi-Fi",
+        "solution": "Changez vos serveurs DNS manuellement vers 8.8.8.8 et 8.8.4.4 (Google DNS) dans vos paramètres réseau."
+      }
+    ]
+  },
+  {
+    "id": 4,
+    "mot-cle": ["pare-feu", "firewall", "bloqué", "connexion bloquée"],
+    "problemes": [
+      {
+        "question": "Connexion Wi-Fi bloquée par le pare-feu",
+        "solution": "Accédez aux paramètres du pare-feu et assurez-vous que votre application ou votre navigateur est autorisé à utiliser Internet."
+      }
+    ]
+  },
+  {
+    "id": 5,
+    "mot-cle": ["wifi desactive", "activer wifi", "wifi eteint", "reseau indisponible"],
+    "problemes": [
+      {
+        "question": "Le Wi-Fi ne s'active pas sur mon appareil",
+        "solution": "Redémarrez l’appareil. Si le problème persiste, vérifiez les paramètres matériels ou consultez le fabricant."
+      }
+    ]
+  },
+  {
+    "id": 6,
+    "mot-cle": ["chauffe", "surchauffe", "perte connexion", "routeur chaud"],
+    "problemes": [
+      {
+        "question": "Le routeur chauffe et la connexion devient instable",
+        "solution": "Placez le routeur dans un endroit ventilé et assurez-vous qu’il n’est pas obstrué par des objets."
+      }
+    ]
+  },
+  {
+    "id": 7,
+    "mot-cle": ["trop d'appareils", "lent", "ralentissement wifi", "connexion lente"],
+    "problemes": [
+      {
+        "question": "Trop d'appareils connectés ralentissent la connexion",
+        "solution": "Déconnectez les appareils inutilisés et envisagez de mettre à jour votre abonnement Internet pour une bande passante plus élevée."
+      }
+    ]
+  },
+  {
+    "id": 8,
+    "mot-cle": ["dhcp", "ip dynamique", "adresse ip indisponible", "pas d'ip"],
+    "problemes": [
+      {
+        "question": "Problème d'obtention d'une adresse IP (DHCP)",
+        "solution": "Redémarrez votre routeur. Si cela ne fonctionne pas, attribuez manuellement une adresse IP dans les paramètres réseau."
+      }
+    ]
+  },
+  {
+    "id": 9,
+    "mot-cle": ["mot de passe wifi", "oubli mot de passe", "connexion impossible"],
+    "problemes": [
+      {
+        "question": "Mot de passe Wi-Fi oublié",
+        "solution": "Accédez aux paramètres de votre routeur via son adresse IP et consultez ou réinitialisez le mot de passe Wi-Fi."
+      }
+    ]
+  },
+  {
+    "id": 10,
+    "mot-cle": ["wifi intermittent", "coupe wifi", "connexion instable"],
+    "problemes": [
+      {
+        "question": "Le Wi-Fi se déconnecte fréquemment",
+        "solution": "Vérifiez les interférences possibles (micro-ondes, téléphones sans fil). Essayez de changer le canal Wi-Fi sur votre routeur."
+      }
+    ]
+  },
+  {
+    "id": 11,
+    "mot-cle": ["mise a jour", "firmware", "mise à jour routeur"],
+    "problemes": [
+      {
+        "question": "Problème de compatibilité Wi-Fi dû à un firmware obsolète",
+        "solution": "Mettez à jour le firmware de votre routeur en suivant les instructions du fabricant."
+      }
+    ]
+  }
+]
