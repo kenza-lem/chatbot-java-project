@@ -1,8 +1,8 @@
 package com.example.projetjava.model;
 
 public class QuestionReponse {
-    private String question;
-    private String solution;
+    public String question;
+    public String solution;
 
     public QuestionReponse(String question,String solution){
         this.question = question;

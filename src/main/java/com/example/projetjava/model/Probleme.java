@@ -1,11 +1,16 @@
 package com.example.projetjava.model;
 
+import com.google.gson.annotations.Expose;
+
 import java.util.List;
 
 public class Probleme {
-    private int id;
-    private List<String> motCle;
-    private List<QuestionReponse> problemes;
+
+    public int id;
+
+    public List<String> motCle;
+
+    public List<QuestionReponse> problemes;
 
     public Probleme(int id, List<String> motCle, List<QuestionReponse> problemes) {
         this.id = id;
