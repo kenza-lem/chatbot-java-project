@@ -6,6 +6,6 @@ module com.example.projetjava {
     requires org.controlsfx.controls;
     requires com.dlsc.formsfx;
 
-    opens com.example.projetjava to javafx.fxml;
-    exports com.example.projetjava;
+    opens com.example.projetjava.model to com.google.gson;
+
 }

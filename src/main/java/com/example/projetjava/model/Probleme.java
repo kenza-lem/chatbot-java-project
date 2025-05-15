@@ -1,21 +1,23 @@
 package com.example.projetjava.model;
-
-import com.google.gson.annotations.Expose;
-
+import com.google.gson.annotations.SerializedName;
+import java.util.ArrayList;
 import java.util.List;
+
+
+
+
 
 public class Probleme {
 
-    public int id;
+    private int id;
+    @SerializedName("mot-cle")
+    private List<String> motCle;
 
-    public List<String> motCle;
+    private List<QuestionReponse> problemes;
 
-    public List<QuestionReponse> problemes;
-
-    public Probleme(int id, List<String> motCle, List<QuestionReponse> problemes) {
-        this.id = id;
-        this.motCle = motCle;
-        this.problemes = problemes;
+    public Probleme() {
+        this.motCle = new ArrayList<>();
+        this.problemes = new ArrayList<>();
     }
 
     public int getId() {

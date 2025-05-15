@@ -5,7 +5,8 @@ public class MainTest {
     public  static void main(String[] args){
         GestionProbleme gp = new GestionProbleme();
         gp.ouvrirFichier();
-        gp.RechercherProbleme("wi-fi");
-        gp.RechercherProbleme("mise a jour");
+        gp.afficherTout();
+        gp.RechercherProbleme("Wi-Fi");
+        gp.RechercherProbleme("mi");
     }
 }
