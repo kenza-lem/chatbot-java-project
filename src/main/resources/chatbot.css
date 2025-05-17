@@ -1,0 +1,71 @@
+.root {
+    /* couleurs primaires */
+    -fx-primary-color: #007AFF;
+    -fx-primary-dark-color: #0055CC;
+    -fx-primary-light-color: #5AC8FA;
+
+    /* autres variables */
+    -fx-background-color: #F2F2F7;
+    -fx-card-color: #FFFFFF;
+
+    /* polices */
+    -fx-font-family: "SF Pro Display", "Segoe UI", sans-serif;
+    -fx-font-size: 14px;
+
+    /* coins arrondis */
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+}
+
+.chat-container {
+    -fx-background-color: #F2F2F7;
+    -fx-padding: 16px; /* remplacer par une valeur fixe */
+}
+
+.header-text {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #007AFF; /* utilise -fx-text-fill et une couleur directe */
+    -fx-padding: 16px 0;
+}
+
+.message-list {
+    -fx-background-color: transparent;
+    -fx-padding: 8px;
+    -fx-background-insets: 0;
+    -fx-border-width: 0;
+}
+
+.message-list .list-cell {
+    -fx-background-color: transparent;
+    -fx-padding: 8px 0;
+}
+
+.user-message {
+    -fx-background-color: #007AFF;
+    -fx-background-radius: 18px 4px 18px 18px;
+    -fx-padding: 4px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 4, 0, 0, 2);
+}
+
+.user-message .message-text {
+    -fx-fill: white;
+}
+
+.user-message .time-label {
+    -fx-text-fill: rgba(255, 255, 255, 0.7);
+    -fx-alignment: center-right;
+}
+
+.bot-message {
+    -fx-background-color: #FFFFFF;
+    -fx-background-radius: 4px 18px 18px 18px;
+    -fx-padding: 4px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 4, 0, 0, 2);
+}
+
+.bot-message .message-text {
+    -fx-fill: #1C1C1E;
+}
+
+/* etc. */
