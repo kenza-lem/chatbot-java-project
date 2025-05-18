@@ -1,11 +1,19 @@
 module com.example.projetjava {
+    // JavaFX
     requires javafx.controls;
     requires javafx.fxml;
-    requires com.google.gson;
 
+    // Bibliothèques
+    requires com.google.gson;
     requires org.controlsfx.controls;
     requires com.dlsc.formsfx;
+    requires opennlp.tools.models;
 
+    // Ouverture à la réflexion (ex : Gson)
     opens com.example.projetjava.model to com.google.gson;
 
+    // Exposition à JavaFX (Application, FXML, etc.)
+    exports com.example.projetjava.view;
+    exports com.example.projetjava.controller;
+    exports com.example.projetjava.model;
 }
