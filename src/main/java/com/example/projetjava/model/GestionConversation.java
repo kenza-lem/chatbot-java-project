@@ -3,11 +3,18 @@ package com.example.projetjava.model;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonSerializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonPrimitive;
+import com.google.gson.JsonParseException;
 
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,6 +22,12 @@ public class GestionConversation {
     private List<Conversation> listeConversation;
     private static final String fichierConversation = "src/main/resources/conversation.json";
     private int nextIdConversation = 1;
+
+    private static final Gson gson = new GsonBuilder()
+            .registerTypeAdapter(LocalDateTime.class, (JsonSerializer<LocalDateTime>) (src, typeOfSrc, context) -> new JsonPrimitive(src.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)))
+            .registerTypeAdapter(LocalDateTime.class, (JsonDeserializer<LocalDateTime>) (json, typeOfT, context) -> LocalDateTime.parse(json.getAsString(), DateTimeFormatter.ISO_LOCAL_DATE_TIME))
+            .setPrettyPrinting()
+            .create();
 
     public GestionConversation() {
         this.listeConversation = new ArrayList<>();
@@ -24,7 +37,6 @@ public class GestionConversation {
     private void chargerConversation() {
         try {
             FileReader file = new FileReader(fichierConversation);
-            Gson gson = new Gson();
             Type listType = new TypeToken<List<Conversation>>() {}.getType();
             listeConversation = gson.fromJson(file, listType);
             file.close();
@@ -45,21 +57,19 @@ public class GestionConversation {
             }
         } catch (IOException e) {
             listeConversation = new ArrayList<>();
-
         }
     }
-//cest une methode pour savegarder la cnv dans json
-public void sauvegarderCnv(){
+
+    public void sauvegarderCnv() {
         try {
             FileWriter fwriter = new FileWriter(fichierConversation);
-            Gson gson=new GsonBuilder().setPrettyPrinting().create();
-            gson.toJson(listeConversation,fwriter);
+            gson.toJson(listeConversation, fwriter);
             fwriter.close();
-        }catch (IOException e){
+        } catch (IOException e) {
             e.printStackTrace();
         }
-}
-//cest une methode pour creer une nouvelle conversation
+    }
+
     public Conversation creerConversation() {
         Conversation conversation = new Conversation();
         conversation.setId(String.valueOf(nextIdConversation));
@@ -68,32 +78,32 @@ public void sauvegarderCnv(){
         sauvegarderCnv();
         return conversation;
     }
-    //cest une methode pour ajputer une cnv a une cnv existante
-    public void ajouterMsg(int idConversation, String msg,boolean isUser) {
-        Conversation cnv=trouverCnv(idConversation);
-        if (cnv !=null){
-            cnv.addMessage(msg,isUser);
+
+    public void ajouterMsg(int idConversation, String msg, boolean isUser) {
+        Conversation cnv = trouverCnv(idConversation);
+        if (cnv != null) {
+            cnv.addMessage(msg, isUser);
             sauvegarderCnv();
         }
     }
-    //methode pour marquer que la cnv est resolu
-    public void estResolue(int conId,boolean resolu){
-        Conversation cnv=trouverCnv(conId);
-        if(cnv != null){
+
+    public void estResolue(int conId, boolean resolu) {
+        Conversation cnv = trouverCnv(conId);
+        if (cnv != null) {
             cnv.setResolved(resolu);
             sauvegarderCnv();
         }
     }
-    //on doit ajouter un feedback a une conversation
+
     public void ajouterFeedback(int conversationId, int note) {
-        Conversation cnv= trouverCnv(conversationId);
+        Conversation cnv = trouverCnv(conversationId);
         if (cnv != null) {
             cnv.addFeedback(note);
             sauvegarderCnv();
         }
     }
-    // methode pour trouver une cnv par id
-    public  Conversation trouverCnv(int idConversation){
+
+    public Conversation trouverCnv(int idConversation) {
         for (Conversation cnv : listeConversation) {
             if (cnv.getId().equals(String.valueOf(idConversation))) {
                 return cnv;
@@ -101,11 +111,11 @@ public void sauvegarderCnv(){
         }
         return null;
     }
-    //obtenir toutes les cnv
+
     public List<Conversation> getListeConversation() {
         return listeConversation;
     }
-    //obtenir les cnv non resolu
+
     public List<Conversation> getListeConversationNonResolu() {
         List<Conversation> listeConversationNonResolu = new ArrayList<>();
         for (Conversation cnv : listeConversation) {
@@ -114,5 +124,10 @@ public void sauvegarderCnv(){
             }
         }
         return listeConversationNonResolu;
+    }
+
+    public void supprimerConversation(Conversation conversation) {
+        listeConversation.remove(conversation);
+        sauvegarderCnv();
     }
 }

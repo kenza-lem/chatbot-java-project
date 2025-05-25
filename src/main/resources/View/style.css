@@ -1,7 +1,7 @@
 .root {
     -fx-font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
     -fx-font-size: 14px;
-    -fx-background-color: #f0f2f5;
+    -fx-background-color: #181818;
 
     /* Variables de couleur */
     -primary-color: #4285f4;
@@ -198,30 +198,29 @@
 
 /* ===== ZONE DE SAISIE ===== */
 .message-input {
-    -fx-background-color: #f1f3f4;
+    -fx-background-color: #222;
+    -fx-text-fill: #fff;
+    -fx-border-color: #00FF99;
+    -fx-border-radius: 20px;
     -fx-background-radius: 20px;
-    -fx-padding: 8px 15px;
-    -fx-prompt-text-fill: #80868b;
-    -fx-focus-color: transparent;
-    -fx-faint-focus-color: transparent;
 }
 
 .message-input:focused {
     -fx-background-color: white;
+    -fx-text-fill: #222;
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 5, 0, 0, 2);
 }
 
 .send-button {
-    -fx-background-color: -primary-color;
-    -fx-text-fill: white;
-    -fx-background-radius: 20px;
-    -fx-padding: 8px 15px;
-    -fx-cursor: hand;
+    -fx-background-color: #00FF99;
+    -fx-text-fill: #181818;
     -fx-font-weight: bold;
+    -fx-background-radius: 20px;
+    -fx-cursor: hand;
 }
 
 .send-button:hover {
-    -fx-background-color: -primary-dark;
+    -fx-background-color: #27ae60;
 }
 
 .send-button:pressed {
@@ -291,3 +290,164 @@
         -fx-padding: 6px 12px;
     }
 }
+
+/* Sidebar */
+.sidebar {
+    -fx-background-color: #222;
+    -fx-pref-width: 220px;
+    -fx-padding: 0;
+}
+
+.sidebar-title {
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #00FF99;
+    -fx-padding: 30 0 20 0;
+    -fx-alignment: center;
+}
+
+.sidebar-history {
+    -fx-background-color: transparent;
+    -fx-text-fill: #fff;
+    -fx-border-color: #333;
+    -fx-border-width: 0 0 1 0;
+}
+
+.sidebar-feedback {
+    -fx-padding: 20 0 30 0;
+    -fx-alignment: center;
+}
+
+/* Feedback (étoiles) */
+.rating > .container > .button {
+    -fx-background-color: transparent;
+    -fx-shape: "M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z";
+    -fx-background-insets: 0;
+    -fx-padding: 0 2 0 2;
+}
+.rating > .container > .button:selected {
+    -fx-background-color: #00FF99;
+}
+
+/* Zone de messages */
+.message-bubble-user {
+    -fx-background-color: #00FF99;
+    -fx-background-radius: 15 0 15 15;
+    -fx-padding: 10;
+    -fx-text-fill: #181818;
+}
+
+.message-bubble-bot {
+    -fx-background-color: #222;
+    -fx-background-radius: 0 15 15 15;
+    -fx-padding: 10;
+    -fx-text-fill: #fff;
+    -fx-border-color: #00FF99;
+    -fx-border-width: 1;
+}
+
+/* Scrollbar custom */
+.scroll-pane .viewport {
+    -fx-background-color: transparent;
+}
+.scroll-bar:vertical {
+    -fx-background-color: #222;
+}
+.scroll-bar:vertical .thumb {
+    -fx-background-color: #00FF99;
+    -fx-background-insets: 2;
+    -fx-background-radius: 5;
+}
+
+/* ListView custom */
+.list-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: #fff;
+}
+.list-cell:selected {
+    -fx-background-color: #00FF99;
+    -fx-text-fill: #181818;
+}
+
+/* === DESIGN RELATUS.AI VERT/NOIR/BLANC === */
+.sidebar {
+    -fx-background-color: #222;
+    -fx-pref-width: 220px;
+    -fx-padding: 0;
+}
+.sidebar-title {
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #00FF99;
+    -fx-padding: 30 0 20 0;
+    -fx-alignment: center;
+}
+.sidebar-history {
+    -fx-background-color: transparent;
+    -fx-text-fill: #fff;
+    -fx-border-color: #333;
+    -fx-border-width: 0 0 1 0;
+}
+.list-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: #fff;
+}
+.list-cell:selected {
+    -fx-background-color: #00FF99;
+    -fx-text-fill: #181818;
+}
+.list-cell:hover {
+    -fx-background-color: #00FF99;
+    -fx-text-fill: #181818;
+}
+
+.message-bubble-user {
+    -fx-background-color: #00FF99;
+    -fx-background-radius: 15 0 15 15;
+    -fx-padding: 10;
+    -fx-text-fill: #181818;
+}
+.message-bubble-bot {
+    -fx-background-color: #222;
+    -fx-background-radius: 0 15 15 15;
+    -fx-padding: 10;
+    -fx-text-fill: #fff;
+    -fx-border-color: #00FF99;
+    -fx-border-width: 1;
+}
+
+.message-input {
+    -fx-background-color: #222;
+    -fx-text-fill: #fff;
+    -fx-border-color: #00FF99;
+    -fx-border-radius: 20px;
+    -fx-background-radius: 20px;
+}
+.message-input:focused {
+    -fx-background-color: white;
+    -fx-text-fill: #222;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 5, 0, 0, 2);
+}
+.send-button {
+    -fx-background-color: #00FF99;
+    -fx-text-fill: #181818;
+    -fx-font-weight: bold;
+    -fx-background-radius: 20px;
+    -fx-cursor: hand;
+}
+.send-button:hover {
+    -fx-background-color: #27ae60;
+}
+
+/* Feedback emojis */
+.feedback-box {
+    -fx-background-color: #fff;
+    -fx-background-radius: 20px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,255,153,0.1), 10, 0, 0, 0);
+}
+.feedback-box .label {
+    -fx-text-fill: #00FF99;
+    -fx-font-weight: bold;
+}
+
+/* Emoji hover (à appliquer dynamiquement en Java) */

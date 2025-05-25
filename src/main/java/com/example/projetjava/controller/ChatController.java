@@ -114,4 +114,12 @@ public class ChatController {
     public List<Conversation> getConversationsNonResolues() {
         return gestionConversation.getListeConversationNonResolu();
     }
+
+    public void supprimerConversation(Conversation conversation) {
+        gestionConversation.supprimerConversation(conversation);
+        refreshHistorique();
+        if (conversation == conversationActuelle) {
+            nouvelleConversation();
+        }
+    }
 }

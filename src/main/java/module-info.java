@@ -12,6 +12,7 @@ module com.example.projetjava {
     requires java.desktop;
 
     // Ouverture à la réflexion (ex : Gson)
+    opens com.example.projetjava to javafx.graphics, javafx.fxml;
     opens com.example.projetjava.model to com.google.gson;
 
     // Exposition à JavaFX (Application, FXML, etc.)

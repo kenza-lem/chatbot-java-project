@@ -5,6 +5,7 @@ import com.example.projetjava.model.Conversation;
 import javafx.animation.*;
 import javafx.application.Application;
 import javafx.beans.binding.Bindings;
+import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -12,12 +13,14 @@ import javafx.scene.control.*;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.controlsfx.control.Rating;
@@ -30,140 +33,57 @@ public class SimpleView extends Application {
     private ScrollPane scrollPane;
     private TextField messageInput;
     private ListView<Conversation> historiqueListView;
+    private VBox centerPanel;
+    private VBox messagesPanel;
 
     @Override
     public void start(Stage primaryStage) {
         chatController = new ChatController();
+        primaryStage.setTitle("Chat Helper");
 
-        // Configuration de la fenêtre principale
-        primaryStage.setTitle("HelpDesk Assistant");
-        primaryStage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/com/example/projetjava/icon/support-icon.png"))));
-
-        // Création du layout principal
         BorderPane root = new BorderPane();
-        root.setStyle("-fx-background-color: #f0f2f5;");
+        root.getStyleClass().add("root");
 
-        // En-tête du chatbot
-        HBox header = createHeader();
-        root.setTop(header);
+        // Sidebar
+        VBox sidebar = new VBox();
+        sidebar.getStyleClass().add("sidebar");
+        sidebar.setPrefWidth(220);
+        sidebar.setSpacing(10);
+        sidebar.setStyle("-fx-background-color: #222;");
 
-        // Zone centrale avec historique des conversations
-        SplitPane splitPane = new SplitPane();
-        splitPane.setDividerPositions(0.25);
+        // Titre en haut (nom du chatbot)
+        Label title = new Label("Relatus.AI");
+        title.getStyleClass().add("sidebar-title");
+        title.setMaxWidth(Double.MAX_VALUE);
+        title.setAlignment(Pos.CENTER);
+        title.setStyle("-fx-text-fill: #00FF99; -fx-font-size: 22px; -fx-font-weight: bold; -fx-padding: 30 0 20 0;");
 
-        // Panneau de gauche (historique)
-        VBox leftPanel = createLeftPanel();
+        // Historique des conversations
+        historiqueListView = new ListView<>();
+        historiqueListView.getStyleClass().add("sidebar-history");
+        historiqueListView.setItems(FXCollections.observableArrayList(chatController.getHistoriqueConversations()));
+        historiqueListView.setCellFactory(list -> new ConversationListCell());
+        VBox.setVgrow(historiqueListView, Priority.ALWAYS);
+        historiqueListView.setStyle("-fx-background-color: transparent; -fx-text-fill: #fff; -fx-border-color: #333; -fx-border-width: 0 0 1 0;");
 
-        // Panneau de droite (messages)
-        VBox rightPanel = createRightPanel();
+        sidebar.getChildren().addAll(title, historiqueListView);
+        root.setLeft(sidebar);
 
-        splitPane.getItems().addAll(leftPanel, rightPanel);
-        root.setCenter(splitPane);
+        // Zone centrale (messages + input/feedback)
+        centerPanel = new VBox();
+        centerPanel.setSpacing(0);
+        centerPanel.setPadding(new Insets(0));
+        centerPanel.setAlignment(Pos.TOP_CENTER);
 
-        // Zone de saisie de message
-        HBox inputBox = createInputBox();
-        root.setBottom(inputBox);
+        messagesPanel = createRightPanel();
+        centerPanel.getChildren().add(messagesPanel);
+        updateCenterPanel();
+        root.setCenter(centerPanel);
 
-        // Configuration de la scène
-        Scene scene = new Scene(root, 1000, 700);
-        scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/com/example/projetjava/css/styles.css")).toExternalForm());
+        Scene scene = new Scene(root, 900, 600);
+        scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/View/style.css")).toExternalForm());
         primaryStage.setScene(scene);
         primaryStage.show();
-
-        // Animation de démarrage
-        playStartupAnimation(root);
-    }
-
-    private HBox createHeader() {
-        HBox header = new HBox();
-        header.setAlignment(Pos.CENTER_LEFT);
-        header.setPadding(new Insets(15));
-        header.setSpacing(10);
-        header.setStyle("-fx-background-color: #4285f4; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 3);");
-
-        // Logo animé
-        Circle logoCircle = new Circle(25);
-        logoCircle.setFill(Color.WHITE);
-
-        ImageView logoView = new ImageView(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/com/example/projetjava/icon/robot-logo.png"))));
-        logoView.setFitHeight(40);
-        logoView.setFitWidth(40);
-        logoView.setClip(logoCircle);
-
-        // Animation du logo
-        RotateTransition rotateTransition = new RotateTransition(Duration.seconds(3), logoView);
-        rotateTransition.setByAngle(360);
-        rotateTransition.setCycleCount(Animation.INDEFINITE);
-        rotateTransition.play();
-
-        // Titre
-        Label titleLabel = new Label("HelpDesk Assistant");
-        titleLabel.setFont(Font.font("Segoe UI", FontWeight.BOLD, 24));
-        titleLabel.setTextFill(Color.WHITE);
-
-        Separator separator = new Separator();
-        separator.setOrientation(javafx.geometry.Orientation.VERTICAL);
-        separator.setStyle("-fx-background-color: white;");
-
-        Label subtitleLabel = new Label("Support Technique");
-        subtitleLabel.setFont(Font.font("Segoe UI", 16));
-        subtitleLabel.setTextFill(Color.WHITE);
-
-        // Bouton nouvelle conversation
-        Button newChatButton = new Button("Nouvelle conversation");
-        newChatButton.getStyleClass().add("new-chat-button");
-        HBox.setMargin(newChatButton, new Insets(0, 0, 0, 20));
-        newChatButton.setOnAction(e -> {
-            chatController.nouvelleConversation();
-            updateMessagesView();
-        });
-
-        Region spacer = new Region();
-        HBox.setHgrow(spacer, Priority.ALWAYS);
-
-        header.getChildren().addAll(logoView, titleLabel, separator, subtitleLabel, spacer, newChatButton);
-        return header;
-    }
-
-    private VBox createLeftPanel() {
-        VBox leftPanel = new VBox(10);
-        leftPanel.setPadding(new Insets(10));
-        leftPanel.setMinWidth(250);
-        leftPanel.setStyle("-fx-background-color: #ffffff;");
-
-        Label historyLabel = new Label("Historique des conversations");
-        historyLabel.setFont(Font.font("Segoe UI", FontWeight.BOLD, 14));
-
-        // Liste de l'historique des conversations
-        historiqueListView = new ListView<>(chatController.getHistoriqueConversations());
-        historiqueListView.setCellFactory(lv -> new ConversationListCell());
-        historiqueListView.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
-            if (newVal != null) {
-                chatController.changerConversation(newVal);
-                updateMessagesView();
-            }
-        });
-        VBox.setVgrow(historiqueListView, Priority.ALWAYS);
-
-        // Section non résolus
-        Label nonResolusLabel = new Label("Problèmes non résolus");
-        nonResolusLabel.setFont(Font.font("Segoe UI", FontWeight.BOLD, 14));
-
-        VBox nonResolusBox = new VBox(5);
-        chatController.getConversationsNonResolues().forEach(conv -> {
-            Button convButton = new Button("Conversation #" + conv.getId());
-            convButton.getStyleClass().add("conversation-button");
-            convButton.setMaxWidth(Double.MAX_VALUE);
-            convButton.setOnAction(e -> {
-                chatController.changerConversation(conv);
-                updateMessagesView();
-                historiqueListView.getSelectionModel().select(conv);
-            });
-            nonResolusBox.getChildren().add(convButton);
-        });
-
-        leftPanel.getChildren().addAll(historyLabel, historiqueListView, nonResolusLabel, nonResolusBox);
-        return leftPanel;
     }
 
     private VBox createRightPanel() {
@@ -171,7 +91,7 @@ public class SimpleView extends Application {
         rightPanel.setSpacing(10);
         rightPanel.setPadding(new Insets(10));
         rightPanel.setAlignment(Pos.TOP_CENTER);
-        rightPanel.setStyle("-fx-background-color: #eceff1;");
+        rightPanel.setStyle("-fx-background-color: transparent;");
 
         // Zone de messages
         messagesContainer = new VBox();
@@ -182,44 +102,11 @@ public class SimpleView extends Application {
         scrollPane.setFitToWidth(true);
         scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
         scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
-        scrollPane.setStyle("-fx-background-color: transparent; -fx-background: transparent;");
+        scrollPane.getStyleClass().add("scroll-pane");
         VBox.setVgrow(scrollPane, Priority.ALWAYS);
 
-        // Zone d'évaluation
-        HBox feedbackBox = new HBox(10);
-        feedbackBox.setAlignment(Pos.CENTER);
-        feedbackBox.setPadding(new Insets(10));
-        feedbackBox.setStyle("-fx-background-color: white; -fx-background-radius: 10;");
-
-        Label feedbackLabel = new Label("Ce problème est-il résolu ? ");
-
-        // Boutons résolu/non résolu
-        Button resoluButton = new Button("Résolu");
-        resoluButton.getStyleClass().add("resolved-button");
-        resoluButton.setOnAction(e -> chatController.marquerCommeResolu(true));
-
-        Button nonResoluButton = new Button("Non résolu");
-        nonResoluButton.getStyleClass().add("unresolved-button");
-        nonResoluButton.setOnAction(e -> chatController.marquerCommeResolu(false));
-
-        // Rating
-        Label ratingLabel = new Label("Noter l'assistance : ");
-        Rating rating = new Rating();
-        rating.setMax(5);
-        rating.setPartialRating(false);
-        rating.ratingProperty().addListener((obs, oldVal, newVal) -> {
-            if (newVal != null) {
-                chatController.ajouterFeedback(newVal.intValue());
-            }
-        });
-
-        feedbackBox.getChildren().addAll(feedbackLabel, resoluButton, nonResoluButton, new Separator(javafx.geometry.Orientation.VERTICAL), ratingLabel, rating);
-
-        rightPanel.getChildren().addAll(scrollPane, feedbackBox);
-
-        // Initialiser avec les messages
+        rightPanel.getChildren().addAll(scrollPane);
         updateMessagesView();
-
         return rightPanel;
     }
 
@@ -228,7 +115,7 @@ public class SimpleView extends Application {
         inputBox.setAlignment(Pos.CENTER);
         inputBox.setPadding(new Insets(15));
         inputBox.setSpacing(10);
-        inputBox.setStyle("-fx-background-color: white; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, -3);");
+        inputBox.setStyle("-fx-background-color: #fff; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, -3); -fx-background-radius: 20px;");
 
         // Zone de saisie du message
         messageInput = new TextField();
@@ -236,6 +123,7 @@ public class SimpleView extends Application {
         messageInput.setPrefHeight(40);
         messageInput.setFont(Font.font("Segoe UI", 14));
         messageInput.getStyleClass().add("message-input");
+        messageInput.setStyle("-fx-background-color: #222; -fx-text-fill: #fff; -fx-border-color: #00FF99; -fx-border-radius: 20px; -fx-background-radius: 20px;");
         HBox.setHgrow(messageInput, Priority.ALWAYS);
 
         // Binding avec le controller
@@ -245,6 +133,7 @@ public class SimpleView extends Application {
         Button sendButton = new Button("Envoyer");
         sendButton.setPrefHeight(40);
         sendButton.getStyleClass().add("send-button");
+        sendButton.setStyle("-fx-background-color: #00FF99; -fx-text-fill: #181818; -fx-font-weight: bold; -fx-background-radius: 20px; -fx-cursor: hand;");
         sendButton.setOnAction(e -> sendMessage());
 
         // Envoyer le message avec la touche Entrée
@@ -260,6 +149,7 @@ public class SimpleView extends Application {
             chatController.envoyerMessage(message);
             messageInput.clear();
             updateMessagesView();
+            updateCenterPanel();
         }
     }
 
@@ -275,10 +165,11 @@ public class SimpleView extends Application {
                     messageBox.setAlignment(Pos.CENTER_RIGHT);
 
                     VBox textBox = new VBox();
-                    textBox.setStyle("-fx-background-color: #4285f4; -fx-background-radius: 15 0 15 15; -fx-padding: 10;");
+                    textBox.getStyleClass().add("message-bubble-user");
+                    textBox.setStyle("-fx-background-color: #00FF99; -fx-background-radius: 15 0 15 15; -fx-padding: 10; -fx-text-fill: #181818;");
 
                     Text text = new Text(message.getContent());
-                    text.setFill(Color.WHITE);
+                    text.setFill(Color.web("#181818"));
                     text.setWrappingWidth(400);
 
                     Label timestamp = new Label(message.getFormattedTimestamp());
@@ -290,15 +181,12 @@ public class SimpleView extends Application {
                 } else {
                     messageBox.setAlignment(Pos.CENTER_LEFT);
 
-                    ImageView botIcon = new ImageView(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/com/example/projetjava/icon/bot-icon.png"))));
-                    botIcon.setFitHeight(30);
-                    botIcon.setFitWidth(30);
-                    botIcon.setEffect(new DropShadow(5, Color.LIGHTGRAY));
-
                     VBox textBox = new VBox();
-                    textBox.setStyle("-fx-background-color: white; -fx-background-radius: 0 15 15 15; -fx-padding: 10;");
+                    textBox.getStyleClass().add("message-bubble-bot");
+                    textBox.setStyle("-fx-background-color: #222; -fx-background-radius: 0 15 15 15; -fx-padding: 10; -fx-text-fill: #fff; -fx-border-color: #00FF99; -fx-border-width: 1;");
 
                     Text text = new Text(message.getContent());
+                    text.setFill(Color.web("#fff"));
                     text.setWrappingWidth(400);
 
                     Label timestamp = new Label(message.getFormattedTimestamp());
@@ -306,7 +194,7 @@ public class SimpleView extends Application {
                     timestamp.setStyle("-fx-font-size: 10;");
 
                     textBox.getChildren().addAll(text, timestamp);
-                    messageBox.getChildren().addAll(botIcon, textBox);
+                    messageBox.getChildren().addAll(textBox);
                 }
 
                 // Animation du message
@@ -380,11 +268,65 @@ public class SimpleView extends Application {
                 previewLabel.setTextFill(Color.DARKGRAY);
 
                 vbox.getChildren().addAll(idLabel, dateLabel, previewLabel);
-                hbox.getChildren().addAll(statusCircle, vbox);
+
+                // Bouton de suppression
+                Button deleteBtn = new Button("🗑");
+                deleteBtn.setStyle("-fx-background-color: transparent; -fx-cursor: hand; -fx-font-size: 16px;");
+                deleteBtn.setOnAction(e -> {
+                    chatController.supprimerConversation(conversation);
+                    updateHistoriqueListView();
+                });
+
+                hbox.getChildren().addAll(statusCircle, vbox, deleteBtn);
 
                 setGraphic(hbox);
             }
         }
+    }
+
+    private void updateHistoriqueListView() {
+        historiqueListView.setItems(FXCollections.observableArrayList(chatController.getHistoriqueConversations()));
+    }
+
+    private void updateCenterPanel() {
+        // Supprime tout sauf le panel de messages
+        centerPanel.getChildren().setAll(messagesPanel);
+        Conversation conv = chatController.getConversationActuelle();
+        if (conv != null && conv.isResolved()) {
+            centerPanel.getChildren().add(createFeedbackBox(conv));
+        } else {
+            centerPanel.getChildren().add(createInputBox());
+        }
+    }
+
+    private HBox createFeedbackBox(Conversation conversation) {
+        HBox feedbackBox = new HBox(30);
+        feedbackBox.setAlignment(Pos.CENTER);
+        feedbackBox.setPadding(new Insets(30, 0, 30, 0));
+        feedbackBox.setStyle("-fx-background-color: #fff; -fx-background-radius: 20px;");
+
+        Label goodEmoji = new Label("👍");
+        goodEmoji.setStyle("-fx-font-size: 40px; -fx-cursor: hand; -fx-background-radius: 50%; -fx-padding: 10;");
+        goodEmoji.setOnMouseEntered(e -> goodEmoji.setStyle("-fx-font-size: 40px; -fx-cursor: hand; -fx-background-color: #00FF99; -fx-background-radius: 50%; -fx-padding: 10;"));
+        goodEmoji.setOnMouseExited(e -> goodEmoji.setStyle("-fx-font-size: 40px; -fx-cursor: hand; -fx-background-radius: 50%; -fx-padding: 10;"));
+        goodEmoji.setOnMouseClicked((MouseEvent e) -> {
+            chatController.ajouterFeedback(1);
+            updateMessagesView();
+            updateCenterPanel();
+        });
+
+        Label badEmoji = new Label("👎");
+        badEmoji.setStyle("-fx-font-size: 40px; -fx-cursor: hand; -fx-background-radius: 50%; -fx-padding: 10;");
+        badEmoji.setOnMouseEntered(e -> badEmoji.setStyle("-fx-font-size: 40px; -fx-cursor: hand; -fx-background-color: #00FF99; -fx-background-radius: 50%; -fx-padding: 10;"));
+        badEmoji.setOnMouseExited(e -> badEmoji.setStyle("-fx-font-size: 40px; -fx-cursor: hand; -fx-background-radius: 50%; -fx-padding: 10;"));
+        badEmoji.setOnMouseClicked((MouseEvent e) -> {
+            chatController.ajouterFeedback(0);
+            updateMessagesView();
+            updateCenterPanel();
+        });
+
+        feedbackBox.getChildren().addAll(goodEmoji, badEmoji);
+        return feedbackBox;
     }
 
     public static void main(String[] args) {
