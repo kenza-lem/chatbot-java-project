@@ -49,7 +49,7 @@ public class GestionConversation {
                             nextIdConversation = convId + 1;
                         }
                     } catch (NumberFormatException e) {
-                        // Gérer les IDs non numériques si nécessaire
+
                     }
                 }
             } else {

@@ -60,22 +60,49 @@ public class ChatController {
         }
     }
 
+    /**
+     * Ajoute un feedback (note) à la conversation actuelle et affiche un message
+     * de réponse approprié en fonction de la note donnée.
+     * 
+     * @param note La note donnée par l'utilisateur (de 1 à 5)
+     */
     public void ajouterFeedback(int note) {
-        int convId = Integer.parseInt(conversationActuelle.getId());
-        gestionConversation.ajouterFeedback(convId, note);
-
-        switch (note) {
-            case 1:
-            case 2:
-                ajouterMessageSystem("Je suis désolé que mon assistance n'ait pas été satisfaisante. Je travaille constamment à m'améliorer.");
-                break;
-            case 3:
-                ajouterMessageSystem("Merci pour votre retour. J'espère pouvoir vous aider davantage la prochaine fois.");
-                break;
-            case 4:
-            case 5:
-                ajouterMessageSystem("Merci beaucoup pour votre excellent retour ! Je suis ravi d'avoir pu vous aider.");
-                break;
+        try {
+            // Conversion sécurisée de l'ID de la conversation de String en int
+            int convId = Integer.parseInt(conversationActuelle.getId());
+            
+            // Vérification et correction de la note si nécessaire
+            if (note < 1) {
+                note = 1;
+            } else if (note > 5) {
+                note = 5;
+            }
+            
+            // Enregistrement du feedback dans la conversation
+            gestionConversation.ajouterFeedback(convId, note);
+            
+            // Affichage d'un message approprié selon la note
+            switch (note) {
+                case 1:
+                case 2:
+                    // Message pour une note faible
+                    ajouterMessageSystem("Je suis désolé que mon assistance n'ait pas été satisfaisante. Je travaille constamment à m'améliorer.");
+                    break;
+                case 3:
+                    // Message pour une note moyenne
+                    ajouterMessageSystem("Merci pour votre retour. J'espère pouvoir vous aider davantage la prochaine fois.");
+                    break;
+                case 4:
+                case 5:
+                    // Message pour une note élevée
+                    ajouterMessageSystem("Merci beaucoup pour votre excellent retour ! Je suis ravi d'avoir pu vous aider.");
+                    break;
+            }
+            
+            // Rafraîchissement de l'interface utilisateur
+            refreshHistorique();
+        } catch (NumberFormatException e) {
+            System.err.println("Erreur lors de la conversion de l'ID de conversation: " + e.getMessage());
         }
     }
 
@@ -121,5 +148,24 @@ public class ChatController {
         if (conversation == conversationActuelle) {
             nouvelleConversation();
         }
+    }
+    
+    /**
+     * Supprime toutes les conversations de l'historique et crée une nouvelle conversation.
+     */
+    public void supprimerToutesConversations() {
+        // Obtenir une copie de la liste pour éviter les ConcurrentModificationException
+        List<Conversation> conversations = new ArrayList<>(gestionConversation.getListeConversation());
+        
+        // Supprimer chaque conversation
+        for (Conversation conversation : conversations) {
+            gestionConversation.supprimerConversation(conversation);
+        }
+        
+        // Vider l'observable list pour mise à jour immédiate de l'UI
+        historiqueConversations.clear();
+        
+        // Créer une nouvelle conversation
+        nouvelleConversation();
     }
 }
