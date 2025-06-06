@@ -11,6 +11,7 @@ public class Conversation {
     private int feedbackRating;
     private List<Message> messages;
     private boolean resolved;
+    private String feedbackComment; // Nouveau champ pour stocker le commentaire
 
     // Constructeur avec paramètres
     public Conversation(String id, LocalDateTime creationDate, int feedbackRating) {
@@ -19,6 +20,7 @@ public class Conversation {
         this.feedbackRating = feedbackRating;
         this.messages = new ArrayList<>();
         this.resolved = false;
+        this.feedbackComment = null; // Initialisation à null
     }
 
     // Constructeur par défaut
@@ -27,6 +29,7 @@ public class Conversation {
         this.feedbackRating = 0;
         this.messages = new ArrayList<>();
         this.resolved = false;
+        this.feedbackComment = null; // Initialisation à null
     }
 
     // Ajouter un message à la conversation
@@ -44,6 +47,20 @@ public class Conversation {
         if (rating >= 1 && rating <= 5) {
             this.feedbackRating = rating;
         }
+    }
+
+    // Getters et setters pour le commentaire de feedback
+    public String getFeedbackComment() {
+        return feedbackComment;
+    }
+
+    public void setFeedbackComment(String feedbackComment) {
+        this.feedbackComment = feedbackComment;
+    }
+
+    // Vérifier si la conversation a déjà un commentaire
+    public boolean hasComment() {
+        return feedbackComment != null && !feedbackComment.trim().isEmpty();
     }
 
     // Getters et setters

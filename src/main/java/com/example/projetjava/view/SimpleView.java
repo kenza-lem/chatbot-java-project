@@ -409,60 +409,147 @@ public class SimpleView extends Application {
         feedbackTitle.setFont(Font.font("System", FontWeight.BOLD, 16));
         feedbackTitle.setTextFill(Color.web("#FFFFFF"));
         
+        // Affichage dynamique de la note
+        Label ratingDisplay = new Label("Note : 3");
+        ratingDisplay.setFont(Font.font("System", FontWeight.BOLD, 18));
+        ratingDisplay.setTextFill(Color.web("#00A651"));
+        
         // Using ControlsFX Rating component
         Rating ratingControl = new Rating(5);
         ratingControl.setPartialRating(false);
         ratingControl.setUpdateOnHover(true);
         ratingControl.setStyle("-fx-background-color: transparent;");
         
+        // Set a default rating of 3 to ensure it's never 0
+        ratingControl.setRating(3);
+        
+        // Update rating display when rating changes
+        ratingControl.ratingProperty().addListener((obs, oldVal, newVal) -> {
+            ratingDisplay.setText("Note : " + (int)newVal.doubleValue());
+        });
+        
         HBox emojiContainer = new HBox(30);
         emojiContainer.setAlignment(Pos.CENTER);
         
         Label badEmoji = new Label("😞");
-        badEmoji.setStyle("-fx-font-size: 24px;");
+        badEmoji.setStyle("-fx-font-size: 24px; -fx-cursor: hand;");
         
         Label neutralEmoji = new Label("😐");
-        neutralEmoji.setStyle("-fx-font-size: 24px;");
+        neutralEmoji.setStyle("-fx-font-size: 24px; -fx-cursor: hand;");
         
         Label goodEmoji = new Label("😊");
-        goodEmoji.setStyle("-fx-font-size: 24px;");
+        goodEmoji.setStyle("-fx-font-size: 24px; -fx-cursor: hand;");
+        
+        // Make emojis clickable to set rating
+        badEmoji.setOnMouseClicked(e -> ratingControl.setRating(1));
+        neutralEmoji.setOnMouseClicked(e -> ratingControl.setRating(3));
+        goodEmoji.setOnMouseClicked(e -> ratingControl.setRating(5));
         
         emojiContainer.getChildren().addAll(badEmoji, neutralEmoji, goodEmoji);
         
+        HBox buttonContainer = new HBox(10);
+        buttonContainer.setAlignment(Pos.CENTER);
+        
+        // Create numeric feedback buttons
+        for (int i = 1; i <= 5; i++) {
+            final int rating = i;
+            Button rateButton = new Button(String.valueOf(i));
+            rateButton.setStyle("-fx-background-color: #333333; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 20px; -fx-cursor: hand; -fx-min-width: 40px; -fx-min-height: 40px;");
+            
+            // When hovered
+            rateButton.setOnMouseEntered(e -> 
+                rateButton.setStyle("-fx-background-color: #00A651; -fx-text-fill: #000000; -fx-font-weight: bold; -fx-background-radius: 20px; -fx-cursor: hand; -fx-min-width: 40px; -fx-min-height: 40px;")
+            );
+            
+            // When exited
+            rateButton.setOnMouseExited(e -> 
+                rateButton.setStyle("-fx-background-color: #333333; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 20px; -fx-cursor: hand; -fx-min-width: 40px; -fx-min-height: 40px;")
+            );
+            
+            // When clicked, just set the rating (don't submit yet)
+            rateButton.setOnAction(e -> {
+                ratingControl.setRating(rating);
+            });
+            
+            buttonContainer.getChildren().add(rateButton);
+        }
+        
+        // Section titre commentaire
+        Label commentLabel = new Label("Votre commentaire (optionnel):");
+        commentLabel.setFont(Font.font("System", 14));
+        commentLabel.setTextFill(Color.web("#FFFFFF"));
+        
         TextArea commentInput = new TextArea();
-        commentInput.setPromptText("Commentaires ou suggestions additionnels (optionnel)");
+        commentInput.setPromptText("Partagez votre expérience ou vos suggestions...");
         commentInput.setPrefRowCount(3);
         commentInput.setWrapText(true);
-        commentInput.setStyle("-fx-background-color: #222222; -fx-text-fill: #000000; -fx-background-radius: 10;");
+        commentInput.setStyle("-fx-background-color: #222222; -fx-text-fill: #FFFFFF; -fx-background-radius: 10; -fx-control-inner-background: #222222;");
         
-        Button submitFeedback = new Button("★");
+        // Vérifier si la conversation actuelle a déjà un commentaire
+        Conversation currentConv = chatController.getConversationActuelle();
+        boolean hasExistingComment = false;
+        
+        // Parcourir les messages pour vérifier si un commentaire existe déjà
+        if (currentConv != null) {
+            for (Conversation.Message msg : currentConv.getMessages()) {
+                if (msg.isFromUser() && msg.getContent().startsWith("Commentaire: ")) {
+                    hasExistingComment = true;
+                    String existingComment = msg.getContent().substring("Commentaire: ".length());
+                    commentInput.setText(existingComment);
+                    commentInput.setEditable(false);
+                    commentInput.setStyle("-fx-background-color: #333333; -fx-text-fill: #AAAAAA; -fx-background-radius: 10; -fx-control-inner-background: #333333; -fx-opacity: 0.7;");
+                    break;
+                }
+            }
+        }
+        
+        Button submitFeedback = new Button("Envoyer");
         submitFeedback.setPrefHeight(40);
-        submitFeedback.setPrefWidth(40);
-        submitFeedback.setStyle("-fx-background-color: #00A651; -fx-text-fill: #000000; -fx-font-weight: bold; -fx-background-radius: 20px; -fx-cursor: hand; -fx-font-size: 18px;");
-        submitFeedback.setOnAction(e -> {
-            int rating = (int) ratingControl.getRating();
-            chatController.ajouterFeedback(rating);
-            
-            // Show confirmation
-            feedbackSection.getChildren().clear();
-            Label thankYou = new Label("Merci pour votre évaluation!");
-            thankYou.setFont(Font.font("System", FontWeight.BOLD, 18));
-            thankYou.setTextFill(Color.web("#FFFFFF"));
-            feedbackSection.getChildren().add(thankYou);
-            
-            // Animation
-            FadeTransition fadeTransition = new FadeTransition(Duration.millis(500), thankYou);
-            fadeTransition.setFromValue(0);
-            fadeTransition.setToValue(1);
-            fadeTransition.play();
-        });
+        submitFeedback.setMinWidth(150);
+        submitFeedback.setStyle("-fx-background-color: #00A651; -fx-text-fill: #000000; -fx-font-weight: bold; -fx-background-radius: 20px; -fx-cursor: hand; -fx-font-size: 16px;");
+        
+        if (hasExistingComment) {
+            // Si un commentaire existe déjà, désactiver le bouton
+            submitFeedback.setDisable(true);
+            submitFeedback.setStyle("-fx-background-color: #555555; -fx-text-fill: #AAAAAA; -fx-font-weight: bold; -fx-background-radius: 20px; -fx-font-size: 16px;");
+        } else {
+            // Sinon, permettre la soumission du commentaire
+            submitFeedback.setOnAction(e -> {
+                int rating = (int) ratingControl.getRating();
+                String comment = commentInput.getText().trim();
+                submitFeedbackWithComment(rating, comment, feedbackSection);
+            });
+        }
         
         // Add tooltip for feedback button
-        Tooltip submitTooltip = new Tooltip("Soumettre l'évaluation");
+        Tooltip submitTooltip = new Tooltip("Soumettre l'évaluation et le commentaire");
         submitTooltip.setStyle("-fx-font-size: 12px;");
         submitFeedback.setTooltip(submitTooltip);
         
-        feedbackSection.getChildren().addAll(feedbackTitle, ratingControl, emojiContainer, commentInput, submitFeedback);
+        feedbackSection.getChildren().addAll(
+            feedbackTitle, 
+            ratingDisplay, 
+            ratingControl, 
+            emojiContainer, 
+            buttonContainer,
+            commentLabel,
+            commentInput, 
+            submitFeedback
+        );
+        
+        // Si un commentaire existe déjà, ajouter immédiatement le bouton "Nouvelle conversation"
+        if (hasExistingComment) {
+            Button newConversationBtn = new Button("Nouvelle Conversation");
+            newConversationBtn.setPrefHeight(40);
+            newConversationBtn.setMinWidth(200);
+            newConversationBtn.setStyle("-fx-background-color: #00A651; -fx-text-fill: #000000; -fx-font-weight: bold; -fx-background-radius: 20px; -fx-cursor: hand;");
+            newConversationBtn.setOnAction(e -> {
+                chatController.nouvelleConversation();
+                updateMessagesView();
+                updateCenterPanel();
+            });
+            feedbackSection.getChildren().add(newConversationBtn);
+        }
         
         // Add an entrance animation
         feedbackSection.setOpacity(0);
@@ -474,23 +561,84 @@ public class SimpleView extends Application {
         return feedbackSection;
     }
 
-    private void playStartupAnimation(BorderPane root) {
-        // Animation de fondu au démarrage
-        FadeTransition fadeIn = new FadeTransition(Duration.seconds(1), root);
-        fadeIn.setFromValue(0);
-        fadeIn.setToValue(1);
-
-        // Animation de rebond pour l'interface
-        ScaleTransition scaleIn = new ScaleTransition(Duration.millis(800), root);
-        scaleIn.setFromX(0.9);
-        scaleIn.setFromY(0.9);
-        scaleIn.setToX(1.0);
-        scaleIn.setToY(1.0);
-        scaleIn.setInterpolator(Interpolator.EASE_OUT);
-
-        // Jouer les animations séquentiellement
-        SequentialTransition sequence = new SequentialTransition(fadeIn, scaleIn);
-        sequence.play();
+    // Modified method to handle feedback submission with comments
+    private void submitFeedbackWithComment(int rating, String comment, VBox feedbackSection) {
+        try {
+            System.out.println("Submitting rating: " + rating + ", Comment: " + comment);
+            
+            // Send feedback with comment to controller
+            chatController.ajouterFeedback(rating, comment);
+            
+            // Désactiver immédiatement la saisie de commentaire après soumission
+            feedbackSection.getChildren().clear();
+            
+            VBox thanksBox = new VBox(15);
+            thanksBox.setAlignment(Pos.CENTER);
+            
+            // Thank you message
+            Label thankYou = new Label("Merci pour votre évaluation !");
+            thankYou.setFont(Font.font("System", FontWeight.BOLD, 20));
+            thankYou.setTextFill(Color.web("#FFFFFF"));
+            
+            // Display the submitted rating
+            Label ratingInfo = new Label("Note : " + rating);
+            ratingInfo.setFont(Font.font("System", 16));
+            ratingInfo.setTextFill(Color.web("#00A651"));
+            
+            // Display the comment if provided
+            if (comment != null && !comment.isEmpty()) {
+                Label commentDisplay = new Label("Commentaire : " + comment);
+                commentDisplay.setFont(Font.font("System", 14));
+                commentDisplay.setTextFill(Color.web("#CCCCCC"));
+                commentDisplay.setWrapText(true);
+                thanksBox.getChildren().add(commentDisplay);
+            }
+            
+            // Afficher immédiatement le bouton "Nouvelle conversation"
+            Button newConversationBtn = new Button("Nouvelle Conversation");
+            newConversationBtn.setPrefHeight(40);
+            newConversationBtn.setMinWidth(200);
+            newConversationBtn.setStyle("-fx-background-color: #00A651; -fx-text-fill: #000000; -fx-font-weight: bold; -fx-background-radius: 20px; -fx-cursor: hand;");
+            newConversationBtn.setOnAction(e -> {
+                chatController.nouvelleConversation();
+                updateMessagesView();
+                updateCenterPanel();
+            });
+            
+            thanksBox.getChildren().addAll(thankYou, ratingInfo, newConversationBtn);
+            feedbackSection.getChildren().add(thanksBox);
+            
+            // Animation
+            FadeTransition fadeTransition = new FadeTransition(Duration.millis(500), thanksBox);
+            fadeTransition.setFromValue(0);
+            fadeTransition.setToValue(1);
+            fadeTransition.play();
+            
+            // Update messages to show the system message
+            updateMessagesView();
+            
+            // Replace the input box with an empty pane
+            centerBorderPane.setBottom(new Pane());
+            
+            // Démarrer automatiquement une nouvelle conversation après un court délai
+            PauseTransition pauseTransition = new PauseTransition(Duration.seconds(2));
+            pauseTransition.setOnFinished(event -> {
+                chatController.nouvelleConversation();
+                updateMessagesView();
+                updateCenterPanel();
+            });
+            pauseTransition.play();
+        } catch (Exception ex) {
+            System.err.println("Error submitting feedback: " + ex.getMessage());
+            ex.printStackTrace();
+            
+            // Show error to user
+            Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+            errorAlert.setTitle("Erreur");
+            errorAlert.setHeaderText("Erreur d'envoi du feedback");
+            errorAlert.setContentText("Une erreur s'est produite lors de l'envoi de votre évaluation.");
+            errorAlert.showAndWait();
+        }
     }
 
     // Cellule personnalisée pour l'affichage des conversations dans la liste
@@ -555,6 +703,25 @@ public class SimpleView extends Application {
         // Make sure the BorderPane is properly updated with the current conversation state
         Conversation conv = chatController.getConversationActuelle();
         updateHistoriqueListView();
+    }
+
+    private void playStartupAnimation(BorderPane root) {
+        // Animation de fondu au démarrage
+        FadeTransition fadeIn = new FadeTransition(Duration.seconds(1), root);
+        fadeIn.setFromValue(0);
+        fadeIn.setToValue(1);
+
+        // Animation de rebond pour l'interface
+        ScaleTransition scaleIn = new ScaleTransition(Duration.millis(800), root);
+        scaleIn.setFromX(0.9);
+        scaleIn.setFromY(0.9);
+        scaleIn.setToX(1.0);
+        scaleIn.setToY(1.0);
+        scaleIn.setInterpolator(Interpolator.EASE_OUT);
+
+        // Jouer les animations séquentiellement
+        SequentialTransition sequence = new SequentialTransition(fadeIn, scaleIn);
+        sequence.play();
     }
 
     public static void main(String[] args) {

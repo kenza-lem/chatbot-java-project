@@ -1,33 +1,78 @@
 [
   {
-    "id": "77",
-    "creationDate": "2025-06-06T09:29:16.5772121",
-    "feedbackRating": 2,
+    "id": "96",
+    "creationDate": "2025-06-06T18:30:34.3713216",
+    "feedbackRating": 0,
     "messages": [
       {
         "content": "Bonjour ! Je suis votre assistant technique. Comment puis-je vous aider aujourd\u0027hui ?",
         "fromUser": false,
-        "timestamp": "2025-06-06T09:29:16.5789431"
-      },
+        "timestamp": "2025-06-06T18:30:34.3713216"
+      }
+    ],
+    "resolved": false
+  },
+  {
+    "id": "97",
+    "creationDate": "2025-06-06T18:48:29.2798815",
+    "feedbackRating": 4,
+    "messages": [
       {
-        "content": "Impossible de trouver mon réseau Wi-Fi",
-        "fromUser": true,
-        "timestamp": "2025-06-06T09:29:59.5754961"
-      },
-      {
-        "content": "Pas de panique ! Voici quelques pistes :\n\n1. **Vérifiez que le Wi-Fi est bien activé sur votre appareil.** (Souvent un bouton ou un interrupteur).\n2. **Redémarrez votre box internet.** Attendez quelques minutes après l\u0027avoir débranchée avant de la rebrancher.\n3. **Assurez-vous que votre réseau Wi-Fi n\u0027est pas caché.** Si c\u0027est le cas, vous devrez l\u0027ajouter manuellement en entrant son nom et son mot de passe.\n",
+        "content": "Bonjour ! Je suis votre assistant technique. Comment puis-je vous aider aujourd\u0027hui ?",
         "fromUser": false,
-        "timestamp": "2025-06-06T09:30:01.3756343"
+        "timestamp": "2025-06-06T18:48:29.284884"
       },
       {
         "content": "Parfait ! Je suis heureux d\u0027avoir pu vous aider. N\u0027hésitez pas à me solliciter pour d\u0027autres questions.",
         "fromUser": false,
-        "timestamp": "2025-06-06T09:30:14.8136574"
+        "timestamp": "2025-06-06T18:48:32.5802186"
       },
       {
-        "content": "Je suis désolé que mon assistance n\u0027ait pas été satisfaisante. Je travaille constamment à m\u0027améliorer.",
+        "content": "Commentaire: reponse utile",
+        "fromUser": true,
+        "timestamp": "2025-06-06T18:48:58.9506901"
+      },
+      {
+        "content": "Merci beaucoup pour votre excellent retour ! Je suis ravi d\u0027avoir pu vous aider.",
         "fromUser": false,
-        "timestamp": "2025-06-06T09:30:22.1212132"
+        "timestamp": "2025-06-06T18:48:58.9516891"
+      }
+    ],
+    "resolved": true,
+    "feedbackComment": "reponse utile"
+  },
+  {
+    "id": "98",
+    "creationDate": "2025-06-06T18:49:00.9799354",
+    "feedbackRating": 0,
+    "messages": [
+      {
+        "content": "Bonjour ! Je suis votre assistant technique. Comment puis-je vous aider aujourd\u0027hui ?",
+        "fromUser": false,
+        "timestamp": "2025-06-06T18:49:00.9809351"
+      },
+      {
+        "content": "Parfait ! Je suis heureux d\u0027avoir pu vous aider. N\u0027hésitez pas à me solliciter pour d\u0027autres questions.",
+        "fromUser": false,
+        "timestamp": "2025-06-06T19:29:19.3325949"
+      }
+    ],
+    "resolved": true
+  },
+  {
+    "id": "99",
+    "creationDate": "2025-06-06T19:29:52.6696259",
+    "feedbackRating": 0,
+    "messages": [
+      {
+        "content": "Bonjour ! Je suis votre assistant technique. Comment puis-je vous aider aujourd\u0027hui ?",
+        "fromUser": false,
+        "timestamp": "2025-06-06T19:29:52.6756262"
+      },
+      {
+        "content": "Parfait ! Je suis heureux d\u0027avoir pu vous aider. N\u0027hésitez pas à me solliciter pour d\u0027autres questions.",
+        "fromUser": false,
+        "timestamp": "2025-06-06T19:29:55.5257689"
       }
     ],
     "resolved": true

@@ -61,25 +61,48 @@ public class ChatController {
     }
 
     /**
-     * Ajoute un feedback (note) à la conversation actuelle et affiche un message
+     * Ajoute un feedback (note et commentaire) à la conversation actuelle et affiche un message
      * de réponse approprié en fonction de la note donnée.
      * 
      * @param note La note donnée par l'utilisateur (de 1 à 5)
+     * @param commentaire Le commentaire optionnel de l'utilisateur
      */
-    public void ajouterFeedback(int note) {
+    public void ajouterFeedback(int note, String commentaire) {
         try {
+            if (conversationActuelle == null) {
+                System.err.println("Erreur: Aucune conversation actuelle");
+                return;
+            }
+            
             // Conversion sécurisée de l'ID de la conversation de String en int
             int convId = Integer.parseInt(conversationActuelle.getId());
             
             // Vérification et correction de la note si nécessaire
             if (note < 1) {
                 note = 1;
+                System.out.println("Note ajustée au minimum: 1");
             } else if (note > 5) {
                 note = 5;
+                System.out.println("Note ajustée au maximum: 5");
             }
+            
+            System.out.println("Ajout de feedback: " + note + " pour la conversation ID: " + convId);
             
             // Enregistrement du feedback dans la conversation
             gestionConversation.ajouterFeedback(convId, note);
+            
+            // Si un commentaire a été fourni, l'ajouter comme message utilisateur
+            // et le stocker aussi dans la propriété feedbackComment
+            if (commentaire != null && !commentaire.trim().isEmpty()) {
+                // Ajout du commentaire comme message de l'utilisateur
+                gestionConversation.ajouterMsg(convId, "Commentaire: " + commentaire, true);
+                
+                // Stockage du commentaire dans la propriété feedbackComment
+                if (conversationActuelle.getFeedbackComment() == null) {
+                    conversationActuelle.setFeedbackComment(commentaire);
+                    System.out.println("Commentaire ajouté: " + commentaire);
+                }
+            }
             
             // Affichage d'un message approprié selon la note
             switch (note) {
@@ -97,13 +120,27 @@ public class ChatController {
                     // Message pour une note élevée
                     ajouterMessageSystem("Merci beaucoup pour votre excellent retour ! Je suis ravi d'avoir pu vous aider.");
                     break;
+                default:
+                    System.err.println("Note non prise en charge: " + note);
+                    break;
             }
             
             // Rafraîchissement de l'interface utilisateur
             refreshHistorique();
+            
         } catch (NumberFormatException e) {
             System.err.println("Erreur lors de la conversion de l'ID de conversation: " + e.getMessage());
+        } catch (Exception e) {
+            System.err.println("Erreur lors de l'ajout du feedback: " + e.getMessage());
+            e.printStackTrace();
         }
+    }
+    
+    /**
+     * Surcharge de la méthode ajouterFeedback pour maintenir la compatibilité
+     */
+    public void ajouterFeedback(int note) {
+        ajouterFeedback(note, null);
     }
 
     private void ajouterMessageSystem(String message) {
